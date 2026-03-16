@@ -3,6 +3,7 @@ package org.snail.prequalbackend.service;
 import org.snail.prequalbackend.model.PullRequestData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -58,5 +59,17 @@ public class PullRequestService {
         } catch (IOException e) {
             throw new RuntimeException("Erreur scan repo: " + repoPath, e);
         }
+    }
+
+    public FileSystemResource getBranchZip(String organisation, String repo, int id, boolean isHead) {
+        String fileName = isHead ? "head.zip" : "base.zip";
+
+        Path prFolder = Path.of(datasetRoot, organisation, repo, "pr_" + id);
+        Path zipPath = prFolder.resolve(fileName);
+        if (!Files.exists(zipPath)) {
+            throw new RuntimeException("Zip file not found: " + zipPath);
+        }
+
+        return fsReader.readFileFromDisk(zipPath);
     }
 }

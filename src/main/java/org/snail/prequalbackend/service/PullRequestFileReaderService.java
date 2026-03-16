@@ -4,6 +4,7 @@ import org.snail.prequalbackend.model.Comment;
 import org.snail.prequalbackend.model.Metadata;
 import org.snail.prequalbackend.model.Metrics;
 import org.snail.prequalbackend.model.PullRequestData;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
@@ -29,6 +30,14 @@ public class PullRequestFileReaderService {
 
         } catch (JacksonException e) {
             throw new RuntimeException("Erreur lecture JSON: " + prFolder, e);
+        }
+    }
+
+    public FileSystemResource readFileFromDisk(Path zipPath) {
+        try {
+            return new FileSystemResource(zipPath);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lecture zip: " + zipPath, e);
         }
     }
 }
