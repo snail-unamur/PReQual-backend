@@ -2,9 +2,9 @@ package org.snail.prequalbackend.model;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public record Comment (
-        String body,
+public record Review(
         Author author,
-        @Field("created_at") String createdAt
-) {
-}
+        String state,
+        String body,
+        @Field("submitted_at") String submittedAt
+) {}

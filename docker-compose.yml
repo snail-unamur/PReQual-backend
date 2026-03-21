@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: prequal-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: PReQual
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - prequal-network
+
+  backend:
+    build: .
+    container_name: prequal-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_MONGODB_URI: mongodb://mongodb:27017/PReQual
+    volumes:
+      - ~/Downloads/:/app:ro
+    depends_on:
+      - mongodb
+    networks:
+      - prequal-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  prequal-network:
+    driver: bridge
+

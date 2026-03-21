@@ -1,8 +1,9 @@
 package org.snail.prequalbackend.controller;
 
 import org.jspecify.annotations.NonNull;
-import org.snail.prequalbackend.model.PullRequestData;
+import org.snail.prequalbackend.dto.PullRequestDTO;
 import org.snail.prequalbackend.service.PullRequestService;
+import org.snail.prequalbackend.service.PullRequestZipService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,31 +14,37 @@ import org.springframework.http.MediaType;
 import org.springframework.core.io.FileSystemResource;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/pr")
 public class PullRequestController {
 
-    private final PullRequestService service;
+    private final PullRequestService pullRequestService;
+    private final PullRequestZipService zipService;
 
-    public PullRequestController(PullRequestService service) {
-        this.service = service;
+    public PullRequestController(PullRequestService pullRequestService, PullRequestZipService zipService) {
+        this.pullRequestService = pullRequestService;
+        this.zipService = zipService;
     }
 
     @GetMapping("/{organisation}/{repo}/{id}")
-    public PullRequestData getPR(
+    public PullRequestDTO getPR(
             @PathVariable String organisation,
             @PathVariable String repo,
             @PathVariable int id) {
-        return service.getPullRequest(organisation, repo, id);
+        return PullRequestDTO.fromPullRequest(pullRequestService.getPullRequest(organisation, repo, id));
     }
 
     @GetMapping("/{organisation}/{repo}")
-    public Collection<PullRequestData> getAllPR(
+    public Collection<PullRequestDTO> getAllPR(
             @PathVariable String organisation,
             @PathVariable String repo) {
-        return service.getAllPullRequests(organisation, repo);
+        return pullRequestService.getAllPullRequests(organisation, repo)
+                .stream()
+                .map(PullRequestDTO::fromPullRequest)
+                .collect(Collectors.toList());
     }
 
     @GetMapping(value = "/{organisation}/{repo}/{id}/head", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -45,7 +52,7 @@ public class PullRequestController {
             @PathVariable String organisation,
             @PathVariable String repo,
             @PathVariable int id) throws IOException {
-        FileSystemResource headZip = service.getBranchZip(organisation, repo, id, true);
+        FileSystemResource headZip = zipService.getZipFile(organisation, repo, id, true);
         return generateFileResponse(headZip);
     }
 
@@ -54,7 +61,7 @@ public class PullRequestController {
             @PathVariable String organisation,
             @PathVariable String repo,
             @PathVariable int id) throws IOException {
-        FileSystemResource baseZip = service.getBranchZip(organisation, repo, id, false);
+        FileSystemResource baseZip = zipService.getZipFile(organisation, repo, id, false);
         return generateFileResponse(baseZip);
     }
 

@@ -1,11 +1,14 @@
 package org.snail.prequalbackend.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public record Metadata(
+        @Field("id") String id,
+        int number,
+        Author author,
         String title,
         String body,
         String state,
-        @JsonProperty("created_at") String createdAt,
-        @JsonProperty("closed_at") String closedAt
+        @Field("created_at") String createdAt,
+        @Field("closed_at") String closedAt
 ) {}
