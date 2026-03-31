@@ -1,36 +1,32 @@
-version: '3.8'
 
 services:
   mongodb:
     image: mongo:7.0
     container_name: prequal-mongodb
     ports:
-      - "27017:27017"
+      - "27018:27017"
     environment:
-      MONGO_INITDB_DATABASE: PReQual
+      MONGO_INITDB_DATABASE: prequal
     volumes:
       - mongodb_data:/data/db
     networks:
-      - prequal-network
+      - prequal-sonar-network
 
   backend:
     build: .
     container_name: prequal-backend
     ports:
-      - "8080:8080"
-    environment:
-      SPRING_MONGODB_URI: mongodb://mongodb:27017/PReQual
+      - "8081:8080"
     volumes:
-      - ~/Downloads/:/app:ro
+      - ~/PReQual-script/tmp:/data:ro
     depends_on:
       - mongodb
     networks:
-      - prequal-network
+      - prequal-sonar-network
 
 volumes:
   mongodb_data:
 
 networks:
-  prequal-network:
+  prequal-sonar-network:
     driver: bridge
-
