@@ -1,32 +1,40 @@
-
 services:
   mongodb:
-    image: mongo:7.0
+    image: mongo:latest
     container_name: prequal-mongodb
     ports:
-      - "27018:27017"
+      - "27017:27017"
     environment:
-      MONGO_INITDB_DATABASE: prequal
+      MONGO_INITDB_DATABASE: PReQual
     volumes:
       - mongodb_data:/data/db
     networks:
-      - prequal-sonar-network
+      - prequal-network
+
+  sonar:
+    image: sonarqube:latest
+    container_name: prequal-sonar
+    ports:
+      - "9000:9000"
+    networks:
+      - prequal-network
 
   backend:
     build: .
     container_name: prequal-backend
     ports:
-      - "8081:8080"
+      - "8080:8080"
     volumes:
-      - ~/PReQual-script/tmp:/data:ro
+      - ./tmp:/data:ro #todo: must be adapted
     depends_on:
       - mongodb
     networks:
-      - prequal-sonar-network
+      - prequal-network
 
 volumes:
   mongodb_data:
 
 networks:
-  prequal-sonar-network:
-    driver: bridge
+  prequal-network:
+    external: true
+    name: prequal-network
