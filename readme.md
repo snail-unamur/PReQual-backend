@@ -2,19 +2,17 @@
 
 ## Deploy
 
-1. Build Docker image:
+1. Create Docker network:
 
     ```bash
-    docker build -t prequal-backend .
+    docker network create prequal-network
     ```
 
-2. Run Docker container:
+2. Run the Docker Compose file:
 
     ```bash
-     docker run -d --name PReQual-backend -v ~/Downloads/:/app/data:ro -p 8080:8080 prequal-backend
+     docker compose up
     ```
-
-    Modify the volume path (`~/Downloads/`) to the directory where your input files are located.
 
 ## Backnd API Endpoints
 The Swagger documentation of the API is available at: http://localhost:8080/swagger-ui/index.html
