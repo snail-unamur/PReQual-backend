@@ -10,5 +10,6 @@ public record Metadata(
         String body,
         String state,
         @Field("created_at") String createdAt,
-        @Field("closed_at") String closedAt
+        @Field("closed_at") String closedAt,
+        @Field("merged_at") String mergedAt
 ) {}
