@@ -13,10 +13,8 @@ public record PullRequestDTO(
         Metrics head,
         List<Comment> comments,
         Metadata meta,
-        Size size,
         Stats stats,
         List<Review> reviews,
-        String reviewDecision,
         String org,
         String repo
 ) {
@@ -28,10 +26,8 @@ public record PullRequestDTO(
                 pr.head,
                 pr.comments,
                 pr.meta,
-                pr.size,
                 pr.stats,
                 pr.reviews,
-                pr.reviewDecision,
                 pr.org,
                 pr.repo
         );
